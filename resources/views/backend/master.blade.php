@@ -1,0 +1,8 @@
+@section('title','MM-cupid')
+@include('backend.layouts.cpheader')
+@include('backend.layouts.cpsidebar')
+@include('backend.layouts.cpnavigation')
+@yield('content')
+@include('backend.layouts.cpfooter')
+@yield('javascript')
+@include('backend.layouts.htmlend')
