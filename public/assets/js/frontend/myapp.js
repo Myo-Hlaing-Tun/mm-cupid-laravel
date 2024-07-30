@@ -1,18 +1,19 @@
 var myApp = angular.module("myApp", []);
 
-myApp.controller("MyController", function ($scope, $http) {
+myApp.controller("MyController", function ($scope, $http, $timeout) {
     $scope.ages_arr = [];
     $scope.min_ages_arr = [];
     $scope.max_ages_arr = [];
     $scope.user_photo = false;
     $scope.user_details = true;
+    $scope.selectedhobbies = [];
     $scope.data = {};
 
     $scope.email_exists = '';
 
     $scope.alldefinitions = function(){
         $scope.username         = $('#username').val();
-        $scope.email            = $('#email').val();
+        $scope.email            = $('#email').val().trim();
         $scope.password         = $('#password').val();
         $scope.confirm_password = $('#confirm_password').val();
         $scope.phone            = $('#phone').val();
@@ -51,10 +52,16 @@ myApp.controller("MyController", function ($scope, $http) {
             .then(function (response) {
                 if (response.status == 200) {
                     $scope.hobbies = response.data.data;
+                    for(let i =0; i< $scope.hobbies.length; i++){
+                        $scope.hobbies[i].checked = false;
+                    }
+                    if($scope.selectedhobbies.length > 0){
+                        for(let i =0; i<$scope.selectedhobbies.length; i++){
+                            $scope.hobbies[$scope.selectedhobbies[i]].checked = true;
+                        }
+                    }
                 }
             });
-
-        $("#date_of_birth").prop("readonly", true);
     }
 
     $scope.reveal = function (field) {
@@ -99,10 +106,13 @@ myApp.controller("MyController", function ($scope, $http) {
         if ($scope.username == '') {
             $scope.process_error = true;
         }
+        if (!/[^\s]/.test($scope.username)){
+            $scope.process_error = true;
+        }
         if ($scope.email == '') {
             $scope.process_error = true;
         }
-        else if (!/^([a-z]+)([\d.-])*([a-z])*@([a-z]+)\.([a-z]{2,})$/.test($scope.email)) {
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($scope.email)) {
             $scope.process_error = true;
         }
         if ($scope.password == '') {
@@ -173,8 +183,10 @@ myApp.controller("MyController", function ($scope, $http) {
 
         if (!$scope.process_error) {
             $("#next_btn1").prop("disabled", false);
+            document.getElementById('pole').style.width = "50%";
         } else {
             $("#next_btn1").prop("disabled", true);
+            document.getElementById('pole').style.width = "0%";
         }
     }
 
@@ -251,10 +263,17 @@ myApp.controller("MyController", function ($scope, $http) {
         } else {
             switch (field) {
                 case "username":
-                    $scope.error_msg_username = "";
-                    break;
+                    if(!/[^\s]/.test($scope.username)){
+                        $scope.process_error = true;
+                        $scope.error_msg_username = "Username must include at least one character";
+                        break;
+                    }
+                    else{
+                        $scope.error_msg_username = "";
+                        break;
+                    }
                 case "email":
-                    if (!/^([a-z]+)([\d.-])*([a-z])*@([a-z]+)\.([a-z]{2,})$/.test($scope.email)) {
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($scope.email)) {
                         $scope.process_error = true;
                         $scope.error_msg_email = "Invalid email format";
                         break;
@@ -286,7 +305,7 @@ myApp.controller("MyController", function ($scope, $http) {
                 case "date_of_birth":
                     if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test($scope.date_of_birth)) {
                         $scope.process_error = true;
-                        $scope.error_msg_dob = "Birthday format must be in mm/dd/yyyy";
+                        $scope.error_msg_dob = "Birthday format must be in yyyy-mm-dd";
                     }else{
                         $scope.error_msg_dob = "";
                     }
@@ -375,10 +394,10 @@ myApp.controller("MyController", function ($scope, $http) {
                             $('#email').get(0).scrollIntoView();
                         }
                         if ($scope.process_error == false) {
-                            $scope.hobbies       = [];
+                            $scope.selectedhobbies       = [];
                             $('.hobby:checked').each(function() {
                                 if($(this).is(':checked')){
-                                    $scope.hobbies.push($(this).val());
+                                    $scope.selectedhobbies.push($(this).val());
                                 }
                             });
                             $scope.user_photo = true;
@@ -404,7 +423,7 @@ myApp.controller("MyController", function ($scope, $http) {
         formData.append('about',$scope.about);
         formData.append('work',$scope.work);
         formData.append('gender',$scope.gender);
-        formData.append('hobbies',$scope.hobbies);
+        formData.append('hobbies',$scope.selectedhobbies);
         formData.append('min_age',$scope.min_age);
         formData.append('max_age',$scope.max_age);
         formData.append('pgender',$scope.pgender);
@@ -420,7 +439,7 @@ myApp.controller("MyController", function ($scope, $http) {
             $http.post( url, formData, {
                 headers: { 'Content-Type': undefined },
             }).then(function(response) {
-                if(response.status == 200){
+                if(response.data.status == 200){
                     $(".loading").hide();
                     window.location.href = base_url + "/login?success=1";
                 }
@@ -447,5 +466,40 @@ myApp.controller("MyController", function ($scope, $http) {
                     }
                 }
             });
+    }
+
+    $scope.back = function() {
+        $scope.user_photo = false;
+        $scope.user_details = true;
+        $scope.ages_arr = [];
+        $scope.min_ages_arr = [];
+        $scope.max_ages_arr = [];
+        $scope.data = {};
+        $scope.init();
+        $scope.process_error = false;
+        document.getElementById('pole').style.width = "50%";
+        $timeout(
+            function(){
+                let today_date = new Date();
+                let last_18_years_ago;
+                if(today_date.getFullYear()%4 == 0 && today_date.getMonth() == 1 && today_date.getDate() == 29){
+                    last_18_years_ago = new Date(today_date.getFullYear()-18, today_date.getMonth(), today_date.getDate()-1);
+                }
+                else{
+                    last_18_years_ago = new Date(today_date.getFullYear()-18, today_date.getMonth(), today_date.getDate());
+                }
+
+                $( "#date_of_birth" ).datepicker({
+                    changeYear : true,
+                    changeMonth : true,
+                    dateFormat: 'yy-mm-dd',
+                    maxDate:last_18_years_ago,
+                    yearRange: "-60:+0"
+                });
+                $('#date_of_birth').prop('readonly',true);
+
+                $('#next_btn1').prop('disabled',false);
+            }
+        ,1);
     }
 })

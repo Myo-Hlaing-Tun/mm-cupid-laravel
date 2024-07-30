@@ -409,13 +409,8 @@ function init_flot_chart() {
         .then(response => response.json())
         .then(data => {
             chart_plot_02_data = data;
-            // let sparkline_data = [];
-            // for(let i=0; i<chart_plot_02_data.length; i++){
-            //     sparkline_data.push(chart_plot_02_data[i][1]);
-            // }
 
             if ($("#chart_plot_02").length) {
-                console.log(chart_plot_02_data[0][0], 'ss')
                 var chart_plot_02_settings = {
                     grid: {
                         show: true,
@@ -475,7 +470,7 @@ function init_flot_chart() {
                         mode: "time",
                         min: chart_plot_02_data[0][0] - 24 * 3600 * 1000,
                         max: chart_plot_02_data[chart_plot_02_data.length - 1][0] + 24 * 3600 * 1000,
-                        tickSize: [1, "day"],
+                        tickSize: [2, "day"],
                         timeformat: "%d/%m"
                     }
                 };
@@ -491,115 +486,11 @@ function init_flot_chart() {
                         }
                     }], chart_plot_02_settings);
             }
-
-            $(".sparkline_one").sparkline(sparkline_data, {
-                type: 'bar',
-                height: '125',
-                barWidth: 20,
-                colorMap: {
-                    '7': '#a1a1a1'
-                },
-                barSpacing: 2,
-                barColor: '#26B99A'
-            });
         })
         .catch(error => {
             console.error('Error fetching data:', error);
         });
     }());
-    // (function () {
-    //     fetch(base_url + '/admin-backend/api/registrations')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log(data, 'data');
-    //         chart_plot_02_data = data;
-    
-    //         if ($("#chart_plot_02").length) {
-    //             console.log(chart_plot_02_data[0][0], 'ss');
-                
-    //             var chart_plot_02_settings = {
-    //                 grid: {
-    //                     show: true,
-    //                     aboveData: true,
-    //                     color: "#3f3f3f",
-    //                     labelMargin: 10,
-    //                     axisMargin: 0,
-    //                     borderWidth: 0,
-    //                     borderColor: null,
-    //                     minBorderMargin: 5,
-    //                     clickable: true,
-    //                     hoverable: true,
-    //                     autoHighlight: true,
-    //                     mouseActiveRadius: 100
-    //                 },
-    //                 series: {
-    //                     lines: {
-    //                         show: true,
-    //                         fill: true,
-    //                         lineWidth: 2,
-    //                         steps: false
-    //                     },
-    //                     points: {
-    //                         show: true,
-    //                         radius: 4.5,
-    //                         symbol: "circle",
-    //                         lineWidth: 3.0
-    //                     }
-    //                 },
-    //                 legend: {
-    //                     position: "ne",
-    //                     margin: [0, -25],
-    //                     noColumns: 0,
-    //                     labelBoxBorderColor: null,
-    //                     labelFormatter: function (label, series) {
-    //                         return label + '&nbsp;&nbsp;';
-    //                     },
-    //                     width: 40,
-    //                     height: 1
-    //                 },
-    //                 colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
-    //                 shadowSize: 0,
-    //                 tooltip: true,
-    //                 tooltipOpts: {
-    //                     content: "%s: %y.0",
-    //                     xDateFormat: "%d/%m",
-    //                     shifts: {
-    //                         x: -30,
-    //                         y: -50
-    //                     },
-    //                     defaultTheme: false
-    //                 },
-    //                 yaxis: {
-    //                     min: 0
-    //                 },
-    //                 xaxis: {
-    //                     mode: "time",
-    //                     minTickSize: [1, "day"],
-    //                     timeformat: "%d/%m/%y",
-    //                     min: chart_plot_02_data.length > 0 ? new Date(chart_plot_02_data[0][0]).setHours(0, 0, 0, 0) : null, // Start from the first date at 00:00:00
-    //                     max: chart_plot_02_data.length > 0 ? chart_plot_02_data[chart_plot_02_data.length - 1][0] : null
-    //                 }
-    //             };
-    
-    //             $.plot($("#chart_plot_02"), 
-    //                 [{
-    //                     label: "Registrations",
-    //                     data: chart_plot_02_data,
-    //                     lines: {
-    //                         fillColor: "rgba(150, 202, 89, 0.12)"
-    //                     },
-    //                     points: {
-    //                         fillColor: "#fff"
-    //                     }
-    //                 }], chart_plot_02_settings);
-    //         }
-    
-    //         console.log(chart_plot_02_data, 'chart_plot_02_data after fetch');
-    //     })
-    //     .catch(error => {
-    //         console.error('Error fetching data:', error);
-    //     });
-    // }());
 
     var chart_plot_01_settings = {
         series: {

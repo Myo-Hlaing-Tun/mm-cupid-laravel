@@ -81,33 +81,31 @@
             </span>
             <div class=" justify-content-center">
                 <div class="flex align-items-center" style="font-size: 20px;">
-                    <button class="icon-button" onclick="window.history.back(); return false;">
+                    <a class="icon-button" href="{{ url('/home') }}">
                         <i class="fa fa-arrow-left"></i>
-                    </button>
+                    </a>
                 </div>
             </div>
         </header>
         <section class="article-container-body profile-body rtf">
             <div class="container">
-                <div class="mt-1">
-                    <div class="row">
-                        <div class="col-md-3 position-relative">
-                            <img ng-src="@{{member.thumb_path}}" class="img-fluid rounded-circle" alt="Profile Photo"/>
-                            <div class="position-absolute d-flex" style="top: 70%; right: 10%;" ng-if="member.status == 4">
-                                <i class="fa fa-certificate fs-1 text-primary position-absolute" style="top: 50%; right: 50%;"></i>
-                            </div>
-                            <div class="position-absolute d-flex" style="top: 74%; right: 14%;" ng-if="member.status == 4">
-                                <i class="fa fa-check fs-5 text-white position-absolute" style="top: 50%; right: 50%;"></i>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                        <h3 class="mt-4">@{{member.username}}, @{{member.age}}</h3>
-                        <button type="button" class="btn btn-outline-secondary btn-sm btn-smaller">
-                            <i class="fas fa-mug-hot icon-bigger"></i>
-                        Here To Date</button>
-                    </div>    
+            <div class="mt-1">
+                <div class="row" style="place-items: center;">
+                    <div class="col-md-3 position-relative">
+                        <img ng-src="@{{member.thumb_path}}" class="rounded-circle object-fit-cover shadow" width="120px" height="120px" style="border: 5px solid gray;" alt="Profile Photo"/>
+                        <span class="fs-5 fw-bold d-flex align-items-center position-absolute z-3"
+                            style="bottom: 10px; right: -2px;" ng-if="member.status == 4">
+                            <span class="fa-stack me-2" style="font-size: 14px;">
+                                <i class="fa fa-certificate fa-stack-2x text-primary"></i>
+                                <i class="fa fa-check fa-stack-1x text-white"></i>
+                            </span>
+                        </span>
                     </div>
+                    <div class="col-md-6">
+                        <h3 class="mt-4">@{{member.username}}, @{{member.age}}</h3>
+                    </div>    
                 </div>
+            </div>
                 <div class="d-flex justify-content-between align-items-center m-3 p-4 rounded-1" style="background-color: #e8e9ea">
                     <div>
                         <span class="d-block fw-bold fs-4">@{{member.username}}, @{{member.age}}</span>
@@ -146,11 +144,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="mx-3 mb-4 p-4 rounded-1" style="background-color: #e8e9ea;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="d-block fw-bold fs-4 mb-2">Hobbies</span>
-                            <span class="me-2 px-3 py-1 rounded-pill" style="background-color: #e9d8ff;" ng-repeat="hobby in member.member_hobbies">@{{ hobby.details.name}}</span>
+                <div class="mx-3 mb-4 p-4 rounded-1 d-flex justify-content-between align-items-center" style="background-color: #e8e9ea;">
+                    <div>
+                        <span class="d-block fw-bold fs-4 mb-2">Hobbies</span>
+                        <div class="row mx-auto">
+                            <span class="col-3 rounded-pill m-1 px-2 py-1 text-center" style="background-color: #E9D8FF" ng-repeat="hobby in member.member_hobbies">@{{ hobby.details.name }}</span>
                         </div>
                     </div>
                 </div>

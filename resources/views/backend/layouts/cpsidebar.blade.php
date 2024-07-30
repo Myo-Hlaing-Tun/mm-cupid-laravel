@@ -81,12 +81,12 @@
               </ul>
               <ul class="nav side-menu">
                 <li style="display: {{showPermission('admin-backend/pointpurchase') }}">
-                  <a href="{{ url('admin-backend/pointpurchase/index')}}"><i class="fa fa-usd"></i> Point Purchase Management</a>
+                  <a href="{{ url('admin-backend/pointpurchase/index')}}"><i class="fa fa-database"></i> Point Purchase Management</a>
                 </li>
               </ul>
               <ul class="nav side-menu">
                 <li style="display: {{showPermission('admin-backend/point') }}">
-                  <a href="{{ url('admin-backend/point/log')}}"><i class="fa fa-usd"></i> Point Logs</a>
+                  <a href="{{ url('admin-backend/point/log')}}"><i class="fa fa-history"></i> Point Logs</a>
                 </li>
               </ul>
               <ul class="nav side-menu">

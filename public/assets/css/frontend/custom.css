@@ -5,12 +5,12 @@
 /* change photo icon in register */
 .change_photo {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 2%;
+  left: 2%;
   padding: 8px;
-  background-color: aqua;
-  opacity: 0.4;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
 }
 
 /* load more button  */
@@ -308,6 +308,23 @@ button.is-ghost.active{
   #cancel-btn {
     margin-left: -25px;
   }
+
+  .button.is-ghost{
+    width: 10%;
+  }
+  .button.is-ghost i{
+    display: none;
+  }
+  .button.is-ghost svg{
+    display: none;
+  }
+  .button.is-ghost:hover{
+    background-color: #fff;
+  }
+
+  div.hidden{
+    display: none !important;
+  }
 }
 
 @media(max-width: 500px) {
@@ -315,6 +332,10 @@ button.is-ghost.active{
   .carousel-inner,
   .carousel-indicators {
     width: 100%;
+  }
+  footer{
+    display: flex !important;
+    justify-content: center !important;
   }
 }
 

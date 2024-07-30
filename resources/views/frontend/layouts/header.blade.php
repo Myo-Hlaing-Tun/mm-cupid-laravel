@@ -14,11 +14,12 @@
     <!-- Font Awesome -->
     <link href="{{ url('assets/css/fontawesome/font-awesome.min.css') }}" rel="stylesheet"/>
     <!-- custom -->
-    <link rel="stylesheet" href="{{ url('assets/css/frontend/custom.css?v=20240704') }}">
+    <link rel="stylesheet" href="{{ url('assets/css/frontend/custom.css?v=20240704') }}"/>
     <!-- jquery -->
-    <link rel="stylesheet" href="{{ url('/assets/css/frontend/jquery-ui.css') }}">
+    <link rel="stylesheet" href="{{ url('/assets/css/frontend/jquery-ui.css') }}"/>
     <!-- pnotify css -->
-    <link href="{{ url('assets/css/pnotify/pnotify.css') }}" rel="stylesheet">
+    <link href="{{ url('assets/css/pnotify/pnotify.css') }}" rel="stylesheet"/>
+
     <!-- jquery -->
     <script src="{{ url('/assets/js/frontend/jquery-3.6.0.js') }}"></script>
     <script src="{{ url('/assets/js/frontend/jquery-ui.js') }}"></script>
@@ -31,6 +32,10 @@
     <style>
       .btn-outline-secondary {
         --bs-btn-hover-bg: #6c757d32;
+      }
+
+      #pole{
+        transition: width 1s ease;
       }
     </style>
   </head>

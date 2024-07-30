@@ -2,7 +2,7 @@
 @section('subtitle','Members Details')
 @section('content')
 <div class="right_col" role="main">
-    <button class="btn btn-primary"><a href="{{ url('admin-backend/pointpurchase/index')}}" class="text-white"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Datings List</a></button>
+    <button class="btn btn-primary"><a href="{{ url('admin-backend/dating/index')}}" class="text-white"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Datings List</a></button>
 	<div class="">
         <div class="container my-5">
             <div class="row">
@@ -50,8 +50,6 @@
                             Photo Verified
                             @elseif($accept_member->status == getMemberBannedStatus())
                             Banned
-                            @elseif($accept_member->status == getMemberDatingStatus())
-                            Dating
                             @endif
                         </span>
                     </div>
@@ -119,8 +117,6 @@
                             Photo Verified
                             @elseif($invite_member->status == getMemberBannedStatus())
                             Banned
-                            @elseif($invite_member->status == getMemberDatingStatus())
-                            Dating
                             @endif
                         </span>
                     </div>
@@ -141,6 +137,7 @@
             </div>
         </div>
     </div>
+    <button class="btn btn-success" onclick="confirm({{ $dating_id }})"><a href="javascript:void(0)" class="text-white"><i class="fa fa-check" aria-hidden="true"></i> Mark as Contacted</a></button>
 </div>
 @endsection
 @section('javascript')
@@ -154,7 +151,23 @@
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, confirm this user!"
+            confirmButtonText: "Yes, confirm this member!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+    function confirm(id){
+        const url = "{{ route('dating.approve', 'id') }}".replace('id', +id);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, approve this dating!"
             }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = url;

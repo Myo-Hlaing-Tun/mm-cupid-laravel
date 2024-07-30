@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('member_id')->nullable();
             $table->unsignedTinyInteger('campaigne_type')->nullable();
-            $table->unsignedTinyInteger('created_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
             $table->timestamps();
         });
     }

@@ -70,7 +70,17 @@ myApp.controller("MyController", function ($scope, $http) {
         }
       },
       function (error) {
-        console.log(error);
+        $(".loading").hide();
+        if(!error.data.success){
+            for(x in error.data.errors){
+                new PNotify({
+                    title: 'Oh no!',
+                    text: error.data.errors[x][0],
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        }
       }
     );
   }
@@ -172,10 +182,26 @@ myApp.controller("MyController", function ($scope, $http) {
               const data  = {};
               data.id     = response.data.id;
               $scope.syncLoginMember(data);
+              new PNotify({
+                title: 'Success!',
+                text: 'Your response is recorded',
+                type: 'success',
+                styling: 'bootstrap3'
+            });
             }
           },
           function (error) {
-            console.log(error);
+            $(".loading").hide();
+            if(!error.data.success){
+                for(x in error.data.errors){
+                    new PNotify({
+                        title: 'Oh no!',
+                        text: error.data.errors[x][0],
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            }
           }
         );
       }
@@ -402,7 +428,7 @@ myApp.controller("MyController", function ($scope, $http) {
     Swal.fire({
         title: "Are you sure to edit your details?",
         text: "You won't be able to revert this!",
-        icon: "warning",
+        icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
@@ -452,7 +478,17 @@ myApp.controller("MyController", function ($scope, $http) {
               }
             },
             function (error) {
-              console.log(error);
+              $(".loading").hide();
+              if(!error.data.success){
+                  for(x in error.data.errors){
+                      new PNotify({
+                          title: 'Oh no!',
+                          text: error.data.errors[x][0],
+                          type: 'error',
+                          styling: 'bootstrap3'
+                      });
+                  }
+              }
             }
           );
         }
@@ -471,34 +507,35 @@ myApp.controller("MyController", function ($scope, $http) {
             let formData = new FormData();
             formData.append('file'+i, input.files[0]);
             // formData.append('sort',i);
-        const url = base_url + "/api/photo/update";
-        Swal.fire({
-            title: "Are you sure to change your photos?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change photos!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-              $http.post( url, formData, {
-                headers: { 'Content-Type': undefined },
-                // transformRequest: angular.identity
-              }).then(function(response) {
-                  if(response.data.status == 200){
-                    $scope.init();
-                    $(".loading").hide();
-                    $("#close-btn").click();
+            const url = base_url + "/api/photo/update";
+            $http.post( url, formData, {
+              headers: { 'Content-Type': undefined },
+              // transformRequest: angular.identity
+            }).then(function(response) {
+                if(response.data.status == 200){
+                  $scope.init($scope.member.id);
+                  $(".loading").hide();
+                  $("#close-btn").click();
+                  new PNotify({
+                    title: 'Success!',
+                    text: 'Photo uploaded successfully',
+                    type: 'success',
+                    styling: 'bootstrap3'
+                  });
+                }
+            }).catch(function(error) {
+              $(".loading").hide();
+              if(!error.data.success){
+                  for(x in error.data.errors){
+                      new PNotify({
+                          title: 'Oh no!',
+                          text: error.data.errors[x][0],
+                          type: 'error',
+                          styling: 'bootstrap3'
+                      });
                   }
-              }).catch(function(error) {
-                  console.log('Error:', error);
-              });
-            }
-            else{
-              $('.loading').hide();
-            }
-        });
+              }
+            });
         }
         else{
           alert("Only JPEG,JPG,PNG and GIF files are allowed");
@@ -537,9 +574,22 @@ myApp.controller("MyController", function ($scope, $http) {
             }
           },
           function (error) {
-            console.log(error);
+            $(".loading").hide();
+            if(!error.data.success){
+                for(x in error.data.errors){
+                    new PNotify({
+                        title: 'Oh no!',
+                        text: error.data.errors[x][0],
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            }
           }
         );
+      }
+      else{
+        $('#edit-photos')[0].scrollIntoView();
       }
     });
   }
@@ -616,7 +666,17 @@ myApp.controller("MyController", function ($scope, $http) {
           });
         }
     },function(error){
-        console.log(error);
+      $(".loading").hide();
+      if(!error.data.success){
+          for(x in error.data.errors){
+              new PNotify({
+                  title: 'Oh no!',
+                  text: error.data.errors[x][0],
+                  type: 'error',
+                  styling: 'bootstrap3'
+              });
+          }
+      }
     });
   }
 
@@ -659,6 +719,24 @@ myApp.controller("MyController", function ($scope, $http) {
         styling: 'bootstrap3'
       });
     }
+    if($scope.oldpassword.length < 8){
+      $scope.error = true;
+      new PNotify({
+        title: 'Oh No!',
+        text: "Old password must be at least 8 in length",
+        type: 'error',
+        styling: 'bootstrap3'
+      });
+    }
+    if($scope.newpassword.length < 8){
+      $scope.error = true;
+      new PNotify({
+        title: 'Oh No!',
+        text: "New password must be at least 8 in length",
+        type: 'error',
+        styling: 'bootstrap3'
+      });
+    }
     if($scope.newpassword != $scope.confirmpassword){
       $scope.error = true;
       new PNotify({
@@ -673,20 +751,45 @@ myApp.controller("MyController", function ($scope, $http) {
       const data = {};
       data.oldpassword      = $scope.oldpassword;
       data.newpassword      = $scope.newpassword;
-      data.confirmpassword  = $scope.confirmpassword;
-      const url = base_url + "/api/changePassword";
+      const url = base_url + "/api/password/change";
       $http({
         method: "POST",
         url: url,
         data: data,
       }).then(
         function (response) {
-          if (response.status == 200) {  
+          if (response.data.status == 200) {  
             $(".loading").hide();
+            $('#password-reset').click();
+            new PNotify({
+              title: 'Success!',
+              text: 'Password changed successfully',
+              type: 'success',
+              styling: 'bootstrap3'
+          });
+          }
+          else{
+            $(".loading").hide();
+            new PNotify({
+              title: 'Oh no!',
+              text: 'Failed to change password',
+              type: 'error',
+              styling: 'bootstrap3'
+          });
           }
         },
         function (error) {
-          console.log(error);
+          $(".loading").hide();
+          if(!error.data.success){
+              for(x in error.data.errors){
+                  new PNotify({
+                      title: 'Oh no!',
+                      text: error.data.errors[x][0],
+                      type: 'error',
+                      styling: 'bootstrap3'
+                  });
+              }
+          }
         }
       );
     }

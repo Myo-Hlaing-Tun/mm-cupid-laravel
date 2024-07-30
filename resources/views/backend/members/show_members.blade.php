@@ -25,9 +25,6 @@
                     <table class="table table-striped jambo_table bulk_action">
                         <thead class="text-center">
                             <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
                             <th class="column-title">Username</th>
                             <th class="column-title">Email</th>
                             <th class="column-title">Phone</th>
@@ -46,9 +43,6 @@
                         <tbody class="text-center">
                             @foreach ($members as $member)
                             <tr class="even pointer">
-                                <td class="a-center align-middle">
-                                    <input type="checkbox" class="flat" name="table_records">
-                                </td>
                                 <td class="align-middle">{{ $member->username}}</td>
                                 <td class="align-middle">{{ $member->email}}</td>
                                 <td class="align-middle">{{ $member->phone}}</td>
@@ -67,15 +61,13 @@
                                     <span class="badge badge-success">Photo Verified</span>
                                     @elseif($member->status == getMemberBannedStatus())
                                     <span class="badge badge-danger">Banned</span>
-                                    @elseif($member->status == getMemberDatingStatus())
-                                    <span class="badge badge-info">Dating</span>
                                     @endif
                                 </td>
                                 <td class="align-middle">{{ getCityName((int) $member->city_id)}}</td>
                                 <td class="align-middle"><img src="{{ $member->thumb_path}}" alt="thumb_image" width="75px" height="100px"/></td>
                                 <td class="align-middle">
                                     <a href="javascript:void(0)" class="btn btn-danger d-block" onclick="deleteMember({{ $member->id}})"><i class="fa fa-trash">  Delete Member</i></a>
-                                    @if($member->status == getMemberRegisteredStatus() || $member->status == getMemberEmailVerifiedStatus() || $member->status == getMemberPendingPhotoVerificationStatus())
+                                    @if($member->status == getMemberPendingPhotoVerificationStatus())
                                     <a href="javascript:void(0)" class="btn btn-success d-block" onclick="confirmMember({{ $member->id}})"><i class="fa fa-check">  Admin Confirm</i></a>
                                     @endif
                                     <a href="{{ url('admin-backend/member/' . $member->id)}}" class="btn btn-primary d-block"><i class="fa fa-eye">  View Details</i></a>

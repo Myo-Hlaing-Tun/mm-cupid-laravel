@@ -20,15 +20,21 @@ class AdminDashboardController extends Controller
             $total_registered_count         = $this->memberRepository->getTotalRegisteredMembers();
             $today_registered_count         = $this->memberRepository->getTodayRegisteredMembers();
             $today_email_confirmed_count    = $this->memberRepository->getTodayEmailConfirmedMembers();
+            $active_members                 = $this->memberRepository->getActiveMembers();
             $today_date_requests_count      = $this->memberRepository->getTodayDateRequestsCount();
             $today_date_requests            = $this->memberRepository->getTodayDateRequests();
+            $members                        = $this->memberRepository->getTopProfiles();
+            $query_log = DB::getQueryLog();
+            Utility::saveDebugLog((string) "AdminDashboardController:dashboard - \n",(array) $query_log);
             return view('backend.index',compact(
                 [
                     'total_registered_count',
                     'today_registered_count',
                     'today_email_confirmed_count',
+                    'active_members',
                     'today_date_requests_count',
-                    'today_date_requests'
+                    'today_date_requests',
+                    'members'
                 ]
             ));
         }

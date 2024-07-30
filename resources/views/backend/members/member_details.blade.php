@@ -101,8 +101,6 @@
                             Photo Verified
                             @elseif($member->status == getMemberBannedStatus())
                             Banned
-                            @elseif($member->status == getMemberDatingStatus())
-                            Dating
                             @endif
                         </span>
                     </div>

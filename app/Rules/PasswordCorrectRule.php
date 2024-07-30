@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use App\Models\Members;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class PasswordCorrectRule implements Rule
 {
@@ -33,6 +34,7 @@ class PasswordCorrectRule implements Rule
                         ->where('email', $this->email)
                         ->whereNull('deleted_at')
                         ->first();
+        return Hash::check($this->password,$member->password);
     }
 
     /**
@@ -42,6 +44,6 @@ class PasswordCorrectRule implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'Wrong old password.';
     }
 }

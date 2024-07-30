@@ -7,8 +7,10 @@ use App\Mail\CronJobMail;
 use App\Models\Cron_job;
 use App\Models\Members;
 use App\Models\Setting;
+use App\Utility;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Log;
 use Mail;
 
 class SuggestPartner extends Command

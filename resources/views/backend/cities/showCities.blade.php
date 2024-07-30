@@ -20,9 +20,6 @@
                         <table class="table table-striped jambo_table bulk_action">
                             <thead class="text-center">
                                 <tr class="headings">
-                                <th>
-                                    <input type="checkbox" id="check-all" class="flat">
-                                </th>
                                 <th class="column-title">Id</th>
                                 <th class="column-title">City Name</th>
                                 <th class="column-title">Actions</th>
@@ -35,9 +32,6 @@
                             <tbody class="text-center">
                                 @foreach ($cities as $city)
                                 <tr class="even pointer">
-                                    <td class="a-center align-middle">
-                                        <input type="checkbox" class="flat" name="table_records">
-                                    </td>
                                     <td class="align-middle">{{ $city->id }}</td>
                                     <td class="align-middle">{{ $city->name }}</td>
                                     <td class="align-middle">

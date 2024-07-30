@@ -10,7 +10,17 @@
             <div class="py-3" style="font-size: 14px;">
               Already have an account? <a href="{{ url('login') }}" class="text-black">Log in</a>
             </div>
-            <div class="fw-medium" style="font-size: 14px;">Sign up with your email or phone number</div>
+            <divs style="width: 100%;" class="d-flex justify-content-between align-items-center mb-3">
+                <div id="first" style="width: 50px; height: 50px; border-radius: 100%; line-height: 50px; position: relative;" class="bg-white shadow">
+                  <p id="word1" class="text-black text-center">1</p>
+                </div>
+                <div style="width: 82%; height: 10px;" class="bg-white">
+                    <div id="pole" style="width: 0%; height: 10px;" class="bg-dark"></div>
+                </div>
+                <div id="second" style="width: 50px; height: 50px; border-radius: 100%; line-height: 50px; position: relative;" class="bg-white shadow">
+                  <p class="text-dark text-center">2</p>
+                </div>
+            </divs> 
             <form action="" method="POST" id="form" enctype="multipart/form-data">
                 @csrf
                 <div ng-if="user_details">
@@ -87,7 +97,7 @@
                       <span class="d-block fs-4 mt-3">Choose Your Hobbies</span>
                       <div class="form-check form-check-inline col-md-3" ng-repeat="hobby in hobbies" id="hobbies">
                         <label class="form-check-label" for="hobby-@{{hobby.id}}">@{{hobby.name}}</label>
-                        <input class="form-check-input hobby" type="checkbox" id="hobby-@{{hobby.id}}" value="@{{hobby.id}}" name="hobbies[]" ng-blur="validate('selectedhobbies')" ng-model="selecthobby" ng-change="change(); validate('selectedhobbies')"/>
+                        <input class="form-check-input hobby" type="checkbox" id="hobby-@{{hobby.id}}" value="@{{hobby.id}}" name="hobbies[]" ng-blur="validate('selectedhobbies')" ng-model="hobby.checked" ng-change="change(); validate('selectedhobbies')"/>
                       </div>
                       <p ng-if="error_msg_hobby" class="text-danger d-block">@{{error_msg_hobby}}</p>
                   </div>
@@ -175,6 +185,7 @@
                   </table>
                   <p ng-if="error_msg_photo" class="text-danger" id="err_msg_photo">@{{error_msg_photo}}</p>
                   <button class="btn btn-dark rounded rounded-5 btn-lg mt-4" type="button" id="next_btn2" style="width: 100%;" ng-click="step2();" disabled>Upload</button>
+                  <button class="btn btn-dark rounded rounded-5 btn-lg mt-4" type="button" id="next_btn2" style="width: 100%;" ng-click="back();">Back to First Page</button>
                 </div>
                 <input type="hidden" name="form-sub" id="form-sub" value="1"/>
                 <input type="hidden" name="member_id" id="member_id" value=""/>
@@ -214,6 +225,9 @@
 <!-- pnotify -->
 <script src="{{ url('assets/js/pnotify/pnotify.js')}}"></script>
 
+<!-- smart wizard -->
+<script src="{{ url('assets/js/frontend/jquery.smartWizard.min.js')}}"></script>
+
 <script>
     $( function() {
         let today_date = new Date();
@@ -231,8 +245,9 @@
             dateFormat: 'yy-mm-dd',
             maxDate:last_18_years_ago,
             yearRange: "-60:+0"
-            });
-        } );
+        });
+        $('#date_of_birth').prop('readonly',true);
+    } );
 
     function upload(value){
         $('#file'+value).click();
@@ -248,7 +263,12 @@
 
         let extension = fileName.split('.').pop().toLowerCase();
         if(allowedExtensions.indexOf(extension)<0){
-            alert("Only jpeg, jpg, png and gif files are allowed");
+            new PNotify({
+                title: 'Oh no!',
+                text: "Only jpeg, jpg, png and gif files are allowed",
+                type: 'error',
+                styling: 'bootstrap3'
+            });
             inputContainer.innerHTML = `<input type="file" style="display: none;" id="file${value}" name="file${value}" onchange="fileupload1(${value})"/>`;
             fileContainer.innerHTML = `<i class="fa fa-upload fs-2" style="cursor: pointer;" onclick="upload(${value})"></i></i>`
         }
@@ -259,7 +279,7 @@
 
             reader.onload = function(e) {
                 let imageLink = e.target.result;
-                fileContainer.innerHTML = `<label class="change_photo" onclick="upload(${value})">Change</label>
+                fileContainer.innerHTML = `<label class="change_photo" onclick="upload(${value})"><i class="fa fa-pencil"></i></label>
                                 <img src=${imageLink} class="img-responsive" alt='preview image' width=100% height=100% style="object-fit: cover;"/>`;
             }
 
@@ -275,9 +295,11 @@
 
         if($("#file1").val() == "" && $("#file2").val() == "" && $("#file3").val() == "" && $("#file4").val() == "" && $("#file5").val() == "" && $("#file6").val() == ""){
             $("#next_btn2").prop("disabled",true);
+            document.getElementById('pole').style.width = "50%";
         }
         else{
             $("#next_btn2").prop("disabled",false);
+            document.getElementById('pole').style.width = "100%";
         }
     };
 </script>

@@ -101,13 +101,14 @@ myApp.controller("MyController", function ($scope, $http) {
     }
 
     $scope.show_profile = function (index){
+        $scope.member = $scope.members[index];
+        console.log($scope.member.gallery);
         $("#profile-content").scrollTop(0);
         $("#image-content").css("z-index", 5);
         $(".carousel-inner").html("");
         $("#member-profile").css("z-index", 10);
         $("#member-profile").css("background-color", "rgba(0,0,0,0.5)");
 
-        $scope.member = $scope.members[index];
         $scope.date_request_members = [];
         for(let i = 0; i<$scope.member.invited_members.length; i++){
             $scope.date_request_members.push($scope.member.invited_members[i].accept_id);
@@ -154,7 +155,17 @@ myApp.controller("MyController", function ($scope, $http) {
                 $(".loading").hide();
             }
         },function(error){
-            console.log(error);
+            $(".loading").hide();
+            if(!error.data.success){
+                for(x in error.data.errors){
+                    new PNotify({
+                        title: 'Oh no!',
+                        text: error.data.errors[x][0],
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            }
         });
     }
 
@@ -162,7 +173,7 @@ myApp.controller("MyController", function ($scope, $http) {
         Swal.fire({
             title: "Dating Request",
             text: "Do you want to request date?",
-            icon: "warning",
+            icon: "question",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
@@ -249,6 +260,7 @@ myApp.controller("MyController", function ($scope, $http) {
         $("#member-profile").css("z-index", -10);
         $("#member-profile").css("background-color", "");
         $("#image-content").css("z-index", 10);
+        $scope.member = {};
         // document.getElementById(`profile-${index}`).scrollIntoView({behavior: "smooth", block: "start"});
     }
 

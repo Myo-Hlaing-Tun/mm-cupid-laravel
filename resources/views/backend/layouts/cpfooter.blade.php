@@ -7,7 +7,9 @@
 
   </div>
 </div>
-
+<script>
+    const base_url = "{{url('/')}}";
+</script>
 <!-- jQuery -->
 <script src="{{ url('assets/js/jqueryv2.2/jqueryv2.2.min.js')}}"></script>
 <!-- Bootstrap -->

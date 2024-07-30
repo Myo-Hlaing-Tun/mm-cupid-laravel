@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('hobbies', function (Blueprint $table) {
             $table->id();
             $table->string('name',200)->nullable();
-            $table->unsignedTinyInteger('created_by')->nullable();
-            $table->unsignedTinyInteger('updated_by')->nullable();
-            $table->unsignedTinyInteger('deleted_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
+            $table->unsignedInteger('updated_by')->nullable();
+            $table->unsignedInteger('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

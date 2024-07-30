@@ -28,9 +28,9 @@
                         <tbody class="text-center">
                             @foreach ($requests as $request)
                             <tr class="even pointer">
-                                <td class="align-middle">{{ $request->invite_id}}</td>
+                                <td class="align-middle">{{ $request->getMemberByInviteId->username}}</td>
                                 <td class="align-middle">{{ $request->getMemberByInviteId->phone}}</td>
-                                <td class="align-middle">{{ $request->accept_id}}</td>
+                                <td class="align-middle">{{ $request->getMemberByAcceptId->username}}</td>
                                 <td class="align-middle">{{ $request->getMemberByAcceptId->phone}}</td>
                                 <td class="align-middle">
                                     <a href="{{ url('admin-backend/dating/details/' . $request->invite_id . "/" . $request->accept_id)}}" class="btn btn-primary d-block"><i class="fa fa-eye">  View Members Details</i></a>

@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedInteger('invite_id')->nullable();
             $table->unsignedInteger('accept_id')->nullable();
             $table->unsignedTinyInteger('status')->nullable()->comment("0=pending, 1=rejected, 2=confirmed");
-            $table->unsignedTinyInteger('created_by')->nullable();
-            $table->unsignedTinyInteger('updated_by')->nullable();
-            $table->unsignedTinyInteger('deleted_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
+            $table->unsignedInteger('updated_by')->nullable();
+            $table->unsignedInteger('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -27,12 +27,17 @@
         public function purchasePoint(array $data);
         public function subtractPoints(array $data);
         public function filterMembers(string $keyword);
+        public function getDatingId(int $invite_id, int $accept_id);
         public function getRegisteredMembers();
         public function getTotalRegisteredMembers();
         public function getTodayRegisteredMembers();
         public function getTodayEmailConfirmedMembers();
+        public function getActiveMembers();
         public function getTodayDateRequestsCount();
         public function getTodayDateRequests();
         public function getApprovedDatingRequests();
+        public function getTopProfiles();
+        public function approveDatingRequest(int $id);
+        public function changePassword(array $data);
     }
 ?>

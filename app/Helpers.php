@@ -2,7 +2,6 @@
 use App\Constants;
 use App\Models\Cities;
 use App\Models\Hobbies;
-use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Illuminate\Support\Facades\Session;
     if(!function_exists('getMembersByCity')){
         function getMembersByCities($members){
@@ -116,11 +115,6 @@ use Illuminate\Support\Facades\Session;
            return Constants::MEMBER_BANNED_STATUS;
         }
     }
-    if(!function_exists('getMemberDatingStatus')){
-        function getMemberDatingStatus(){
-           return Constants::MEMBER_DATING_STATUS;
-        }
-    }
     if(!function_exists('getCityName')){
         function getCityName(int $id){
             $city = Cities::select('name')
@@ -141,14 +135,6 @@ use Illuminate\Support\Facades\Session;
                 $hobbies_name .= $hobby_name->name . ", ";
             }
             return rtrim($hobbies_name, ", ");
-        }
-    }
-    if(!function_exists('getMemberGallery')){
-        function getMemberGallery($gallery){
-            $photoes_arr = [];
-            foreach($gallery as $photo){
-                
-            }
         }
     }
     if(!function_exists('getPointAction')){

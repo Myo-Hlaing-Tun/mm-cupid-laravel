@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('member_id')->nullable();
             $table->unsignedInteger('hobby_id')->nullable();
-            $table->unsignedTinyInteger('created_by')->nullable();
-            $table->unsignedTinyInteger('updated_by')->nullable();
-            $table->unsignedTinyInteger('deleted_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
+            $table->unsignedInteger('updated_by')->nullable();
+            $table->unsignedInteger('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

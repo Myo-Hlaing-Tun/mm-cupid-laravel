@@ -74,7 +74,6 @@
                 $insert['point']                = $this->settingRepository->getSetting()->point;
                 $insert['view_count']           = 0;
                 $result                         = Members::create($insert);
-                DB::commit();
 
                 $hobbies = $data['hobbies'];
                 $hobbies = explode(',',$hobbies);
@@ -82,11 +81,10 @@
                 foreach($hobbies as $hobby){
                     $hobby_insert               = [];
                     $hobby_insert['member_id']  = $insert_id;
-                    $hobby_insert['hobby_id']   = $hobby;
+                    $hobby_insert['hobby_id']   = (int)$hobby;
                     $hobby_insert['created_by'] = $insert_id;
                     $hobby_insert['updated_by'] = $insert_id;
                     Member_hobbies::create($hobby_insert);
-                    DB::commit();
                 }
 
                 for($i=1; $i<=6; $i++){
@@ -102,7 +100,6 @@
                         $gallery_insert['created_by']   = $insert_id;
                         $gallery_insert['updated_by']   = $insert_id;
                         Member_gallery::create($gallery_insert);
-                        DB::commit();
                     }
                     if($i== 1 && isset($data['file1']) && $data['file1']->isValid()){
                         $thumb_name         = "thumb_" . $unique_name; 
@@ -110,9 +107,10 @@
                         $update_thumb['thumb'] = $thumb_name;
                         $member = Members::find($insert_id);
                         $member->update($update_thumb);
-                        DB::commit();
                     }
                 }
+                DB::commit();
+               
                 if($result){
                     $member_gallery = Member_gallery::SELECT('name','sort')
                                         ->where('member_id','=',$insert_id)
@@ -149,6 +147,7 @@
                 return $returned_array;
             }
             catch (\Exception $e) {
+                dd($e->getMessage());
                 DB::rollBack();
                 Utility::saveErrorLog((string) "MemberRepository:storeMemberDetails - \n",(string) $e->getMessage());
                 abort(500);
@@ -161,18 +160,19 @@
         }
         public function confirmEmail(string $code){
             $returned_array = [];
-            $member = Members::select('status')
+            $member = Members::select('id','status')
                         ->where('email_confirm_code','=',$code)
                         ->whereNull('deleted_at')
                         ->first();
             if($member == null){
-                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
+                $returned_array['status']   = ReturnedMessage::INTERNAL_SERVER_ERROR;
             }
             else{
                 $insert = [];
                 if($member->status == Constants::MEMBER_REGISTERED_STATUS){
                     $insert['status'] = Constants::MEMBER_EMAIL_CONFIRMED_STATUS;
                     $result = $member->update($insert);
+
                     if($result){
                         $returned_array['status'] = ReturnedMessage::STATUS_OK;
                     }
@@ -319,7 +319,8 @@
                                 DB::raw("CONCAT('". $base_url ."/storage/member_images/', id, '/thumb/', thumb) AS thumb_path"),
                             )
                                 ->where('id', '!=', $member_id)
-                                ->whereNull('deleted_at');
+                                ->whereNull('deleted_at')
+                                ->orderBy('view_count','desc');
             if($partner_gender == Constants::PARTNER_GENDER_MALE || $partner_gender == Constants::PARTNER_GENDER_FEMALE){
                 $members = $members->where('gender','=',$partner_gender);
             }
@@ -448,31 +449,21 @@
                 $member                         = self::getMemberById((int) Auth::guard('member')->user()->id);
                 $result                         = $member->update($update);
                 if($result){
-                    DB::commit();
                     $hobbies    = $data['hobbies_arr'];
                     $insert_id  = $member->id;
-                    $delete_old_hobbies = Member_hobbies::where('member_id', '=', $insert_id)->delete();
-                    if($delete_old_hobbies){
-                        DB::commit();
-                        foreach($hobbies as $hobby){
-                            $hobby_insert               = [];
-                            $hobby_insert['member_id']  = $insert_id;
-                            $hobby_insert['hobby_id']   = $hobby;
-                            $hobby_insert['created_by'] = $insert_id;
-                            $hobby_insert['updated_by'] = $insert_id;
-                            $hobbies_update = Member_hobbies::create($hobby_insert);
-                            if($hobbies_update){
-                                DB::commit();
-                                $returned_array['status'] = ReturnedMessage::STATUS_OK;
-                                $returned_array['member'] = self::getMember((int) $insert_id);
-                            }
-                            else{
-                                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
-                            }
+                    Member_hobbies::where('member_id', '=', $insert_id)->delete();
+                    foreach($hobbies as $hobby){
+                        $hobby_insert               = [];
+                        $hobby_insert['member_id']  = $insert_id;
+                        $hobby_insert['hobby_id']   = $hobby;
+                        $hobby_insert['created_by'] = $insert_id;
+                        $hobby_insert['updated_by'] = $insert_id;
+                        $hobbies_update = Member_hobbies::create($hobby_insert);
+                        if($hobbies_update){
+                            DB::commit();
+                            $returned_array['status'] = ReturnedMessage::STATUS_OK;
+                            $returned_array['member'] = self::getMember((int) $insert_id);
                         }
-                    }
-                    else{
-                        $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
                     }
                 }
                 else{
@@ -489,14 +480,32 @@
         public function updatePhoto(array $data){
             DB::beginTransaction();
             try{
-                $returned_array             = [];
+                $returned_array = [];
                 $id             = Auth::guard('member')->user()->id;
                 for($i=1; $i<=6; $i++){
                     $filename           = "file" . $i;
                     if(isset($data[$filename]) && $data[$filename]->isValid()){
-                        $update         = [];
                         $file           = $data[$filename];
                         $unique_name    = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME) . "_" . date('Ymd_His') . "_" . uniqid() . "." . $file->getClientOriginalExtension();
+                        if($i == 1){
+                            $thumb_name             = "thumb_" . $unique_name;
+                            $member                 = self::getMemberById((int) $id);
+                            $old_thumb_name         = $member['thumb'];
+                            $old_thumb_path         = "member_images/" . $id . "/thumb/" . $old_thumb_name;
+                            $thumb_update           = [];
+                            $thumb_update['thumb']  = $thumb_name;
+                            $member->update($thumb_update);
+                            $destination_path   = storage_path('app/public/member_images/' .$id);
+                            $thumb_path         = $destination_path . "/thumb/";
+                            if(!File::exists($thumb_path)){
+                                File::makeDirectory($thumb_path, 0755, true);
+                            }
+                            Utility::saveThumb($data['file1'], $thumb_path , $thumb_name, Constants::THUMB_WIDTH, Constants::THUMB_HEIGHT);
+
+                            Storage::disk('public')->delete($old_thumb_path);
+                        }
+
+                        $update         = [];
                         $update['name'] = $unique_name;
                         $member_gallery = Member_gallery::where('sort', '=', $i)
                                                         ->where('member_id' , '=', $id)
@@ -517,65 +526,18 @@
                         }
                         DB::commit();
                         $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                        try{
-                            $destination_path   = storage_path('app/public/member_images/' .$id);
-                            if(!File::exists($destination_path)){
-                                File::makeDirectory($destination_path, 0755, true);
-                            }
-                            $file               = $data[$filename];
-                            $file->storeAs('member_images/' .$id . "/",$unique_name,'public');
+                        $destination_path   = storage_path('app/public/member_images/' .$id);
+                        if(!File::exists($destination_path)){
+                            File::makeDirectory($destination_path, 0755, true);
+                        }
+                        $file               = $data[$filename];
+                        $file->storeAs('member_images/' .$id . "/",$unique_name,'public');
+                        $returned_array['status']   = ReturnedMessage::STATUS_OK;
+
+                        if($member_gallery != null){
+                            $old_gallery_path   = "member_images/" . $id . "/" . $old_gallery_name;
+                            Storage::disk('public')->delete($old_gallery_path);
                             $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                        }
-                        catch (\Exception $e) {
-                            DB::rollBack();
-                            Utility::saveErrorLog((string) "MemberRepository:updatePhoto - \n",(string) $e->getMessage());
-                            abort(500);
-                        }
-                        if($i == 1){
-                            $thumb_name             = "thumb_" . $unique_name;
-                            $member                 = self::getMemberById((int) $id);
-                            $old_thumb_name         = $member['thumb'];
-                            $old_thumb_path         = "member_images/" . $id . "/thumb/" . $old_thumb_name;
-                            $thumb_update           = [];
-                            $thumb_update['thumb']  = $thumb_name;
-                            $member->update($thumb_update);
-                            DB::commit();
-                            $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                            try{
-                                $destination_path   = storage_path('app/public/member_images/' .$id);
-                                $thumb_path         = $destination_path . "/thumb/";
-                                if(!File::exists($thumb_path)){
-                                    File::makeDirectory($thumb_path, 0755, true);
-                                }
-                                Utility::saveThumb($data['file1'], $thumb_path , $thumb_name, Constants::THUMB_WIDTH, Constants::THUMB_HEIGHT);
-                                $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                                try{
-                                    Storage::disk('public')->delete($old_thumb_path);
-                                    $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                                }
-                                catch (\Exception $e) {
-                                    DB::rollBack();
-                                    Utility::saveErrorLog((string) "MemberRepository:updatePhoto - \n",(string) $e->getMessage());
-                                    abort(500);
-                                }
-                            }
-                            catch (\Exception $e) {
-                                DB::rollBack();
-                                Utility::saveErrorLog((string) "MemberRepository:updatePhoto - \n",(string) $e->getMessage());
-                                abort(500);
-                            }
-                        }
-                        try{
-                            if($member_gallery != null){
-                                $old_gallery_path   = "member_images/" . $id . "/" . $old_gallery_name;
-                                Storage::disk('public')->delete($old_gallery_path);
-                                $returned_array['status']   = ReturnedMessage::STATUS_OK;
-                            }
-                        }
-                        catch (\Exception $e) {
-                            DB::rollBack();
-                            Utility::saveErrorLog((string) "MemberRepository:updatePhoto - \n",(string) $e->getMessage());
-                            abort(500);
                         }
                     }
                 }
@@ -627,65 +589,29 @@
             return $returned_array;
         }
         public function respondInvitation(array $data){
-            DB::beginTransaction();
-            try{
-                $returned_array = [];
-                $insert         = [];
-                $login_id       = Auth::guard('member')->user()->id;
-                if($data['response'] == 'accept'){
-                    $insert['status']       = Constants::DATE_REQUEST_ACCEPTED;
-                    $insert['updated_by']   = Auth::guard('member')->user()->id;
-                }
-                else{
-                    $insert['status'] = Constants::DATE_REQUEST_REJECTED;
-                }
-                $date_request       = Date_request::where('invite_id','=',$data['id'])
-                                        ->where('accept_id','=',$login_id)
-                                        ->where('status','=',Constants::DATE_REQUEST_SENT)
-                                        ->whereNull('deleted_at')
-                                        ->first();
-                $date_request->update($insert);
-                DB::commit();
-                try{
-                    if($data['response'] == 'accept'){
-                        $member_update              = [];
-                        $member_update['status']    = Constants::MEMBER_DATING_STATUS;
-                        $member                     = self::getMemberById((int) $login_id);
-                        $member->update($member_update);
-                        DB::commit();
-                        try{
-                            $accepted_member = self::getMemberById((int) $data['id']);
-                            $result = $accepted_member->update($member_update);
-                            if($result){
-                                DB::commit();
-                                $returned_array['status'] = ReturnedMessage::STATUS_OK;
-                            }
-                            else{
-                                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
-                            }
-                        }
-                        catch (\Exception $e) {
-                            DB::rollBack();
-                            Utility::saveErrorLog((string) "MemberRepository:respondInvitation - \n",(string) $e->getMessage());
-                            abort(500);
-                        }
-                    }
-                    else{
-                        $returned_array['status'] = ReturnedMessage::STATUS_OK;
-                    }
-                    return $returned_array;
-                }
-                catch (\Exception $e) {
-                    DB::rollBack();
-                    Utility::saveErrorLog((string) "MemberRepository:respondInvitation - \n",(string) $e->getMessage());
-                    abort(500);
-                }
+            $returned_array = [];
+            $insert         = [];
+            $login_id       = Auth::guard('member')->user()->id;
+            if($data['response'] == 'accept'){
+                $insert['status']       = Constants::DATE_REQUEST_ACCEPTED;
+                $insert['updated_by']   = Auth::guard('member')->user()->id;
             }
-            catch (\Exception $e) {
-                DB::rollBack();
-                Utility::saveErrorLog((string) "MemberRepository:respondInvitation - \n",(string) $e->getMessage());
-                abort(500);
+            else{
+                $insert['status'] = Constants::DATE_REQUEST_REJECTED;
             }
+            $date_request       = Date_request::where('invite_id','=',$data['id'])
+                                    ->where('accept_id','=',$login_id)
+                                    ->where('status','=',Constants::DATE_REQUEST_SENT)
+                                    ->whereNull('deleted_at')
+                                    ->first();
+            $result = $date_request->update($insert);
+            if($result){
+                $returned_array['status'] = ReturnedMessage::STATUS_OK;
+            }
+            else{
+                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
+            }
+            return $returned_array;
         }
         public function getMembers(){
             $base_url   = url('/');
@@ -719,7 +645,7 @@
                                     END"
                                 )
                                 ->orderBy('status','asc')
-                                ->paginate(Constants::RECORDS_PER_PAGE);
+                                ->paginate(20);
             return $members;
         }
         public function deleteMember(int $id){
@@ -780,6 +706,14 @@
             }
             return $returned_array;
         }
+        public function getDatingId(int $invite_id, int $accept_id){
+            $dating_id = Date_request::select('id')
+                                        ->where('invite_id','=',$invite_id)
+                                        ->where('accept_id','=',$accept_id)
+                                        ->where('status','!=',Constants::DATE_REQUEST_ADMIN_APPROVED)
+                                        ->first();
+            return $dating_id->id;
+        }
         public function subtractPoints(array $data){
             DB::beginTransaction();
             try{
@@ -795,7 +729,6 @@
                 }
                 $paramObj = Utility::addCreatedBy($update);
                 Point_logs::create($paramObj);
-                DB::commit();
                 try{
                     $member_update = [];
                     $member = Members::find($member_id);
@@ -893,12 +826,18 @@
         public function getTodayEmailConfirmedMembers(){
             $today = Carbon::today();
             $count = Members::whereDate('created_at', $today)
-                            ->where('status','=',Constants::MEMBER_EMAIL_CONFIRMED_STATUS)
-                            ->where('status','=',Constants::MEMBER_PENDING_PHOTO_VERIFICATION_STATUS)
-                            ->where('status','=',Constants::MEMBER_FAILED_PHOTO_VERIFICATION_STATUS)
-                            ->where('status','=',Constants::MEMBER_PHOTO_VERIFIED_STATUS)
-                            ->where('status','=',Constants::MEMBER_DATING_STATUS)
+                            ->where('status','!=',Constants::MEMBER_REGISTERED_STATUS)
+                            ->where('status','!=',Constants::MEMBER_BANNED_STATUS)
+                            ->whereNull('deleted_at')
                             ->count();
+            return $count;
+        }
+        public function getActiveMembers(){
+            $last_30_days   = Carbon::now()->subDays(30);
+            $count          = Members::whereNull('deleted_at')
+                                        ->where('last_login','>=',$last_30_days)
+                                        ->whereNotIn('status',[Constants::MEMBER_REGISTERED_STATUS, Constants::MEMBER_BANNED_STATUS])
+                                        ->count();
             return $count;
         }
         public function getTodayDateRequestsCount(){
@@ -918,6 +857,62 @@
                                     ->where('status','=',Constants::DATE_REQUEST_ACCEPTED)
                                     ->paginate(5);
             return $requests;
+        }
+        public function getTopProfiles(){
+            $base_url = url('/');
+            $members    = Members::select('*',
+                                DB::raw("TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age"),
+                                DB::raw(
+                                    'CASE religion
+                                        WHEN ' . Constants::BUDDHISM_RELIGION . ' THEN "Buddhism"
+                                        WHEN ' . Constants::CHRISTIAN_RELIGION . ' THEN "Christian"
+                                        WHEN ' . Constants::ISLAM_RELIGION . ' THEN "Islam"
+                                        WHEN ' . Constants::HINDUISM_RELIGION . ' THEN "Hinduism"
+                                        WHEN ' . Constants::JAIN_RELIGION . ' THEN "Jain"
+                                        WHEN ' . Constants::SHINTO_RELIGION . ' THEN "Shinto"
+                                        WHEN ' . Constants::ATHEISM_RELIGION . ' THEN "Atheism"
+                                        ELSE "Others"
+                                    END AS religion_name'),
+                                DB::raw(
+                                    'CASE gender
+                                        WHEN ' . Constants::GENDER_MALE . ' THEN "Male"
+                                        ELSE "Female"
+                                    END AS gender_name'),
+                                DB::raw("CONCAT(height_feet ,\"' \", height_inches,\"''\") AS height"),
+                                DB::raw("CONCAT('". $base_url ."/storage/member_images/', id, '/thumb/', thumb) AS thumb_path"),
+                            )
+                                ->whereNull('deleted_at')
+                                ->orderBy('view_count','desc')
+                                ->paginate(10);
+            return $members;
+        }
+        public function approveDatingRequest(int $id){
+            $returned_array     = [];
+            $date_request       = Date_request::find($id);
+            $update             = [];
+            $update['status']   = Constants::DATE_REQUEST_ADMIN_APPROVED;
+            $result             = $date_request->update($update);
+            if($result){
+                $returned_array['status'] = ReturnedMessage::STATUS_OK;
+            }
+            else{
+                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
+            }
+            return $returned_array;
+        }
+        public function changePassword(array $data){
+            $returned_array     = [];
+            $update             = [];
+            $update['password'] = bcrypt($data['newpassword']);
+            $member             = Members::find(Auth::guard('member')->user()->id);
+            $result             = $member->update($update);
+            if($result){
+                $returned_array['status'] = ReturnedMessage::STATUS_OK;
+            }
+            else{
+                $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
+            }
+            return $returned_array;
         }
     }
 ?>

@@ -15,7 +15,6 @@ use App\Http\Requests\Frontend\SyncMembersRequest;
 use App\Http\Requests\Frontend\ViewMemberRequest;
 use App\Http\Resources\CitiesResource;
 use App\Http\Resources\HobbiesResource;
-use App\Http\Resources\MembersPlotResource;
 use App\Http\Resources\MembersResource;
 use App\Mail\ForgetPasswordMail;
 use App\Mail\RegistrationConfirmMail;
@@ -85,6 +84,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getCities - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function getHobbies(){
@@ -96,6 +96,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getHobbies - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function matchEmail($email){
@@ -107,12 +108,14 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:matchEmail - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
 
     public function registerData(MemberDetailsStoreRequest $request){
         try{
             $result = $this->memberRepository->storeMemberDetails((array) $request->all());
+            
             $query_log = DB::getQueryLog();
             Utility::saveDebugLog((string) "MembersController:registerData - \n",(array) $query_log);
             $company_name = $this->settingRepository->getSetting()->company_name;
@@ -129,17 +132,18 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:registerData - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function emailConfirm(EmailConfirmRequest $request){
         try{
-            $result     = $this->memberRepository->confirmEmail((string) $request->all()['code']);
+            $result     = $this->memberRepository->confirmEmail((string) $request->get('code'));
             $query_log  = DB::getQueryLog();
             Utility::saveDebugLog((string) "MembersController:emailConfirm - \n",(array) $query_log);
             if($result['status'] == ReturnedMessage::STATUS_OK){
-                if($result['msg'] == null){
+                if(!isset($result['msg'])){
                     return redirect('login')
-                        ->with('suc_msg','You have confirmed your email for mm-cupid. Now you can use our app.');
+                        ->with('suc_msg','You have confirmed your email for mm-cupid. Now you can login.');
                 }
                 return redirect('login')
                         ->with('err_msg',$result['msg']);
@@ -150,6 +154,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:emailConfirm - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function getLogin(Request $request){
@@ -165,6 +170,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getLogin - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function login(MemberLoginRequest $request){
@@ -223,6 +229,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getLogin - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function logout(){
@@ -245,6 +252,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getInput - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function sendCode(ForgetPasswordEmailRequest $request){
@@ -287,6 +295,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:sendCode - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function getSendCode(){
@@ -295,6 +304,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getSendCode - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function confirmCode(ConfirmCodeRequest $request){
@@ -306,6 +316,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:confirmCodes - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function getChangePassword(string $token){
@@ -314,6 +325,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getChangePassword - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function changePassword(ResetPasswordRequest $request){
@@ -332,6 +344,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:changePassword - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function getIndex(){
@@ -340,6 +353,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:getIndex - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function syncMembers(SyncMembersRequest $request){
@@ -349,6 +363,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:syncMembers - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function updateViewCount(ViewMemberRequest $request){
@@ -365,6 +380,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:updateViewCount - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function requestDate(RequestDateRequest $request){
@@ -384,6 +400,7 @@ class MembersController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "MembersController:requestDate - \n",(string) $e->getMessage());
+            abort(500);
         }
     }
     public function viewMember(string $username,int $id){
@@ -526,8 +543,9 @@ class MembersController extends Controller
     }
     public function showDatingMembers(int $invite_id, int $accept_id){
         try{
-            $invite_member = $this->memberRepository->getMember((int) $invite_id);
+            $invite_member  = $this->memberRepository->getMember((int) $invite_id);
             $accept_member  = $this->memberRepository->getMember((int) $accept_id);
+            $dating_id      = $this->memberRepository->getDatingId((int) $invite_id,(int) $accept_id);
             if($invite_member == null){
                 abort(404);
             }
@@ -537,8 +555,28 @@ class MembersController extends Controller
             $query_log  = DB::getQueryLog();
             Utility::saveDebugLog((string) "MembersController:showDatingMembers - \n", (array) $query_log);
             return view('backend.datings.view_members',compact(
-                ['invite_member', 'accept_member']
+                ['invite_member', 'accept_member', 'dating_id']
             ));
+        }
+        catch(\Exception $e){
+            if($e->getCode() == 0){
+                abort(404);
+            }
+            Utility::saveErrorLog((string) "MembersController:getTodayMembers - \n",(string) $e->getMessage());
+            abort(500);
+        }
+    }
+    public function approveDating(int $id){
+        try{
+            $result = $this->memberRepository->approveDatingRequest((int) $id);
+            if($result['status'] == ReturnedMessage::STATUS_OK){
+                return redirect('admin-backend/dating/index')
+                        ->with('success_msg','Dating Approved Successfully');
+            }
+            else{
+                return redirect('admin-backend/dating/index')
+                        ->with('error_msg','Dating Failed To Approve');
+            }
         }
         catch(\Exception $e){
             if($e->getCode() == 0){

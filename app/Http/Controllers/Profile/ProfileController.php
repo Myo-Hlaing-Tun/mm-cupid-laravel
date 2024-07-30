@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\ChangePasswordRequest;
 use App\Http\Requests\Frontend\DeletePhotoRequest;
 use App\Http\Requests\Frontend\MemberUpdateRequest;
 use App\Http\Requests\Frontend\PointPurchaseRequest;
@@ -129,6 +130,18 @@ class ProfileController extends Controller
         }
         catch(\Exception $e){
             Utility::saveErrorLog((string) "ProfileController:purchasePoint - \n",(string) $e->getMessage());
+            abort(500);
+        }
+    }
+    public function changePassword(ChangePasswordRequest $request){
+        try{
+            $result = $this->memberRepository->changePassword((array) $request->all());
+            $query_log = DB::getQueryLog();
+            Utility::saveDebugLog((string) "ProfileController:changePassword - \n",(array) $query_log);
+            return $result;
+        }
+        catch(\Exception $e){
+            Utility::saveErrorLog((string) "ProfileController:changePassword - \n",(string) $e->getMessage());
             abort(500);
         }
     }

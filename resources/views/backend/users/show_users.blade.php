@@ -20,9 +20,6 @@
                         <table class="table table-striped jambo_table bulk_action">
                             <thead class="text-center">
                                 <tr class="headings">
-                                <th>
-                                    <input type="checkbox" id="check-all" class="flat">
-                                </th>
                                 <th class="column-title">Id</th>
                                 <th class="column-title">User Name</th>
                                 <th class="column-title">Role</th>
@@ -37,13 +34,10 @@
                             <tbody class="text-center">
                                 @foreach ($users as $user)
                                 <tr class="even pointer">
-                                    <td class="a-center align-middle">
-                                        <input type="checkbox" class="flat" name="table_records">
-                                    </td>
                                     <td class="align-middle">{{ $user->id }}</td>
                                     <td class="align-middle">{{ $user->username }}</td>
                                     <td class="align-middle">{{ $user->role_name }}</td>
-                                    <td>
+                                    <td class="align-middle">
                                         @if($user->status_name == "Active")
                                             <span class='badge badge-success'>{{ $user->status_name }}</span>
                                         @else

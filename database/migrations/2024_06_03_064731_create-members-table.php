@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unsignedInteger('height_feet')->nullable();
             $table->unsignedInteger('height_inches')->nullable();
             $table->unsignedTinyInteger('status')->nullable()
-            ->comment("0=registered, 1=email-confirmed, 2=photo-verification-pending, 3= photo-verification-failed, 4= photo-verified, 5=ban, 6=dating");
+            ->comment("0=registered, 1=email-confirmed, 2=photo-verification-pending, 3= photo-verification-failed, 4= photo-verified, 5=ban");
             $table->text('about')->nullable();
             $table->string('work',200)->nullable();
             $table->unsignedInteger('religion')->nullable();
@@ -40,7 +40,7 @@ return new class extends Migration
             $table->dateTime('last_login', $precision = 0)->nullable();
             $table->unsignedInteger('point')->nullable();
             $table->unsignedInteger('view_count')->nullable();
-            $table->unsignedTinyInteger('deleted_by')->nullable();
+            $table->unsignedInteger('deleted_by')->nullable();
             $table->dateTime('forget_password_token_created_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

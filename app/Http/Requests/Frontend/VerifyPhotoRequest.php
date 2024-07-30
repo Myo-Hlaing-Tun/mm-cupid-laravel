@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Frontend;
 
+use App\Http\Requests\BaseFormRequest;
 use App\Rules\Base64Rule;
-use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyPhotoRequest extends FormRequest
+class VerifyPhotoRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

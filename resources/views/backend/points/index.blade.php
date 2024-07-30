@@ -7,7 +7,7 @@
             <div class="col-md-12 col-sm-12  ">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Members List</h2>
+                        <h2>Point Purchases List</h2>
                         <div class="clearfix"></div>
                     </div>
 
@@ -17,9 +17,6 @@
                     <table class="table table-striped jambo_table bulk_action">
                         <thead class="text-center">
                             <tr class="headings">
-                            <th>
-                                <input type="checkbox" id="check-all" class="flat">
-                            </th>
                             <th class="column-title">Username</th>
                             <th class="column-title">Phone</th>
                             <th class="column-title">Screenshot</th>
@@ -33,9 +30,6 @@
                         <tbody class="text-center">
                             @foreach ($members as $member)
                             <tr class="even pointer">
-                                <td class="a-center align-middle">
-                                    <input type="checkbox" class="flat" name="table_records">
-                                </td>
                                 <td class="align-middle">{{ $member->getMemberByMemberId->username}}</td>
                                 <td class="align-middle">{{ $member->getMemberByMemberId->phone}}</td>
                                 <td class="align-middle">

@@ -7,12 +7,12 @@
         </div>
         <section class="bg-white pb-4">
             <div class="">
-                <table style="width: 100%; table-layout: fixed;">
+                <table style="width: 100%; table-layout: fixed;" id="edit-photos">
                     <tr>
                         <td rowspan="2" colspan="2">
                             <div class="border border-primary bg-body-secondary rounded-2 m-1 m-md-2 d-flex justify-content-center align-items-center" style="height: 48vh; position: relative;" id="preview1">
                                 <i class="fa fa-upload fs-1" id="upload1" style="cursor: pointer;" onclick="upload(1)"></i>
-                                <label class="change_photo" id="label1" onclick="upload(1)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label1" onclick="upload(1)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image1" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -20,9 +20,9 @@
                             <div class="border border-primary bg-body-secondary rounded-2 m-1 m-md-2 d-flex justify-content-center align-items-center" style="height: 23vh; position: relative;" id="preview2">
                                 <i class="fa fa-upload fs-2" id="upload2" style="cursor: pointer;" onclick="upload(2)"></i></i>
                                 <div class="bg-white rounded-2 position-absolute d-flex justify-content-center align-items-center" id="trash2" style="width: 25px; height: 25px; top: 5%; right: 5%; display:none !important;">
-                                    <i class="fa fa-trash text-danger fs-4" id="trashicon2" style="cursor: pointer !important;" ng-click="deletePhoto('2')"></i>
+                                    <i class="fa fa-trash fs-4" id="trashicon2" style="cursor: pointer !important;" ng-click="deletePhoto('2')"></i>
                                 </div>
-                                <label class="change_photo" id="label2" onclick="upload(2)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label2" onclick="upload(2)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image2" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -32,9 +32,9 @@
                             <div class="border border-primary bg-body-secondary rounded-2 m-1 m-md-2 d-flex justify-content-center align-items-center" style="height: 23vh; position: relative;" id="preview3">
                                 <i class="fa fa-upload fs-2" id="upload3" style="cursor: pointer;" onclick="upload(3)"></i>
                                 <div class="bg-white rounded-2 position-absolute d-flex justify-content-center align-items-center" id="trash3" style="width: 25px; height: 25px; top: 5%; right: 5%; display:none !important;">
-                                    <i class="fa fa-trash text-danger fs-4" id="trashicon3" style="cursor: pointer !important;" ng-click="deletePhoto('3')"></i>
+                                    <i class="fa fa-trash fs-4" id="trashicon3" style="cursor: pointer !important;" ng-click="deletePhoto('3')"></i>
                                 </div>
-                                <label class="change_photo" id="label3" onclick="upload(3)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label3" onclick="upload(3)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image3" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -44,9 +44,9 @@
                             <div class="border border-primary bg-body-secondary rounded-2 m-1 m-md-2 d-flex justify-content-center align-items-center" style="height: 23vh; position: relative;" id="preview4">
                                 <i class="fa fa-upload fs-2" id="upload4" style="cursor: pointer;" onclick="upload(4)"></i>
                                 <div class="bg-white rounded-2 position-absolute d-flex justify-content-center align-items-center" id="trash4" style="width: 25px; height: 25px; top: 5%; right: 5%; display:none !important;">
-                                    <i class="fa fa-trash text-danger fs-4" id="trashicon4" style="cursor: pointer !important;" ng-click="deletePhoto('4')"></i>
+                                    <i class="fa fa-trash fs-4" id="trashicon4" style="cursor: pointer !important;" ng-click="deletePhoto('4')"></i>
                                 </div>
-                                <label class="change_photo" id="label4" onclick="upload(4)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label4" onclick="upload(4)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image4" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -54,9 +54,9 @@
                             <div class="border border-primary bg-body-secondary rounded-2 m-1 m-md-2 d-flex justify-content-center align-items-center" style="height: 23vh; position: relative;" id="preview5">
                                 <i class="fa fa-upload fs-2" id="upload5" style="cursor: pointer;" onclick="upload(5)"></i>
                                 <div class="bg-white rounded-2 position-absolute d-flex justify-content-center align-items-center" id="trash5" style="width: 25px; height: 25px; top: 5%; right: 5%; display:none !important;">
-                                    <i class="fa fa-trash text-danger fs-4" id="trashicon5" style="cursor: pointer !important;" ng-click="deletePhoto('5')"></i>
+                                    <i class="fa fa-trash fs-4" id="trashicon5" style="cursor: pointer !important;" ng-click="deletePhoto('5')"></i>
                                 </div>
-                                <label class="change_photo" id="label5" onclick="upload(5)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label5" onclick="upload(5)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image5" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -64,9 +64,9 @@
                             <div class="border border-primary bg-body-secondary rounded-2 m-2 d-flex justify-content-center align-items-center" style="height: 23vh; position: relative;" id="preview6">
                                 <i class="fa fa-upload fs-2" id="upload6" style="cursor: pointer;" onclick="upload(6)"></i>
                                 <div class="bg-white rounded-2 position-absolute d-flex justify-content-center align-items-center" id="trash6" style="width: 25px; height: 25px; top: 5%; right: 5%; display:none !important;">
-                                    <i class="fa fa-trash text-danger fs-4" id="trashicon6" style="cursor: pointer !important;" ng-click="deletePhoto('6')"></i>
+                                    <i class="fa fa-trash fs-4" id="trashicon6" style="cursor: pointer !important;" ng-click="deletePhoto('6')"></i>
                                 </div>
-                                <label class="change_photo" id="label6" onclick="upload(6)" style="display:none;">Change</label>
+                                <label class="change_photo" id="label6" onclick="upload(6)" style="display:none;"><i class="fa fa-pencil"></i></label>
                                 <img ng-src="" id="image6" alt='preview image' width=100% height=100% style="object-fit: cover; display: none;"/>
                             </div>
                         </td>
@@ -96,7 +96,6 @@
                         <span class="d-block fw-bold fs-4">@{{member.username}}, @{{member.age}}</span>
                         <span class="d-block">@{{member.gender_name}}, @{{member.city.name}}</span>
                     </div>
-                    <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
                 </div>
             </div>
         </section>
@@ -106,7 +105,6 @@
                     <span class="d-block fw-bold fs-4">Work</span>
                     <span class="d-block">@{{member.work}}</span>
                 </div>
-                <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
             </div>
         </div>
         <div class="mx-3 mb-4 p-4 rounded-1" style="height: 100px; background-color: rgba(145,145,145,0.3);">
@@ -115,7 +113,6 @@
                     <span class="d-block fw-bold fs-4">Education</span>
                     <span class="d-block">@{{member.education}}</span>
                 </div>
-                <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
             </div>
         </div>
         <div class="mx-3 mb-4 p-4 rounded-1" style="height: 100px; background-color: rgba(145,145,145,0.3);">
@@ -124,7 +121,6 @@
                     <span class="d-block fw-bold fs-4">About</span>
                     <span class="d-block">@{{member.about}}</span>
                 </div>
-                <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
             </div>
         </div>
         <div class="mx-3 mb-4 p-4 rounded-1" style="height: 100px; background-color: rgba(145,145,145,0.3);">
@@ -133,7 +129,6 @@
                     <span class="d-block fw-bold fs-4">Height</span>
                     <span class="d-block">@{{member.height}}</span>
                 </div>
-                <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
             </div>
         </div>
         <div class="mx-3 p-4 rounded-1" style="height: 100px; background-color: rgba(145,145,145,0.3);">
@@ -142,7 +137,6 @@
                     <span class="d-block fw-bold fs-4">Phone</span>
                     <span class="d-block">@{{member.phone}}</span>
                 </div>
-                <span type="button" class="fs-4" aria-label="Back"><i class="fa fa-chevron-right"></i></span>
             </div>
         </div>
         <button class="d-block btn btn-dark rounded rounded-5 btn-lg mx-auto my-3" type="button" id="next_btn1" style="width: 96%;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEditForm" aria-controls="offcanvasEditForm" ng-click="showForm()">Edit User Profile</button>

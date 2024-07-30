@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Frontend;
 
 use App\Http\Requests\BaseFormRequest;
+use App\Rules\PasswordCorrectRule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 class ChangePasswordRequest extends BaseFormRequest
 {
@@ -26,7 +28,19 @@ class ChangePasswordRequest extends BaseFormRequest
         return [
             'oldpassword' => [
                 'required',
+                new PasswordCorrectRule(Auth::guard('member')->user()->email,$this->oldpassword)
             ],
+            'newpassword' => [
+                'required',
+                'min:8'
+            ],
+        ];
+    }
+    public function messages(){
+        return [
+            'oldpassword.required'  => 'Please fill old password',
+            'newpassword.required'  => 'Please fill new password',
+            'newpassword.min'       => 'New password must be at least 8 in length'
         ];
     }
 }

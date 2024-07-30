@@ -68,7 +68,7 @@
                     <i class="fa fa-angle-left fs-3"></i>
                 </button>
                 <div class="d-flex">
-                    <button class="round-btn me-3 btn btn-light" style="width: 60px; height: 60px;" ng-click="view_details()"><i class="fa fa-eye fs-3"></i></button>
+                    <button class="round-btn me-3 btn btn-light" style="width: 60px; height: 60px;" ng-click="view_details()"><i class="fa fa-eye fs-3" title="view details"></i></button>
                     <div class="round-btn ms-3 btn btn-light" style="width: 60px; height: 60px;"><i class="fa fa-heart fs-3"></i></div>
                 </div>
                 <button class="round-btn btn btn-light" ng-disabled="next" style="width: 35px; height: 35px;" ng-click="next_profile(member_id)"><i class="fa fa-angle-right fs-3"></i></button>
@@ -77,7 +77,7 @@
 
             <div id="profile-content" class="overflow-y-auto bg-white" style="width:100%; height: 80vh; z-index: 5;">
                 <div class="w-100 h-100">
-                <img ng-src="@{{member.gallery[0].name}}" class="profile-image w-100 h-100 object-fit-cover" alt="member-photo" ng-click="show_photoes(first_photo,all_photoes)"/>
+                <img src="@{{member.gallery[0].name}}" class="profile-image w-100 h-100 object-fit-cover" alt="member-photo" ng-click="show_photoes(first_photo,all_photoes)"/>
                 </div>
                 <div class="">
                 <div class="p-4" style="cursor:pointer;" ng-show="!date_request_members.includes({{ Auth::guard('member')->user()->id }})">

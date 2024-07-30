@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Frontend;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
-class ViewMemberRequest extends FormRequest
+class ViewMemberRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

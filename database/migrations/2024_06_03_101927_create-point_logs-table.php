@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('purchase_id')->nullable();
             $table->unsignedBigInteger('added_point')->nullable();
             $table->unsignedBigInteger('subtracted_point')->nullable();
-            $table->unsignedTinyInteger('created_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
             $table->timestamps();
         });
     }

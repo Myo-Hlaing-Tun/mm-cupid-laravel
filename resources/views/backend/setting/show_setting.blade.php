@@ -14,15 +14,10 @@
 
                 	<div class="x_content">
 
-                	<!-- <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p> -->
-
 					<div class="table-responsive">
 						<table class="table table-striped jambo_table bulk_action">
 							<thead class="text-center">
 								<tr class="headings">
-								<th>
-									<input type="checkbox" id="check-all" class="flat">
-								</th>
 								<th class="column-title">Point</th>
 								<th class="column-title">Company Logo</th>
 								<th class="column-title">Company Name</th>
@@ -38,9 +33,6 @@
 
 							<tbody class="text-center">
 								<tr class="even pointer">
-									<td class="a-center align-middle">
-										<input type="checkbox" class="flat" name="table_records">
-									</td>
 									<td class="align-middle">{{ $setting->point }}</td>
 									<td class="align-middle">
 										<img src="{{ url('storage/images/'.$setting->company_logo)}}" width=100px alt="company logo" />

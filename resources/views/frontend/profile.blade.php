@@ -124,7 +124,7 @@
             <div class=" justify-content-center">
                 <div class="flex align-items-center" style="font-size: 20px;">
                     <i class="fa fa-sign-out fs-3" style="margin-right: 5px; vertical-align: middle; cursor: pointer;" title="logout" ng-click="logout()"></i>
-                    <i class="fa fa-key" style="margin-right: 5px; vertical-align: middle; cursor: pointer;" title="change password" data-bs-toggle="offcanvas" data-bs-target="#offcanvasChangePassword"></i>
+                    <i class="fa fa-key" id="password-reset" style="margin-right: 5px; vertical-align: middle; cursor: pointer;" title="change password" data-bs-toggle="offcanvas" data-bs-target="#offcanvasChangePassword"></i>
                     <button class="icon-button" onclick="showProfile()">
                         <i class="fa fa-user fs-4" title="edit details" id="offcanvas_profile_btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" style="vertical-align: middle;"></i>
                     </button>
@@ -134,49 +134,47 @@
         <section class="article-container-body profile-body rtf">
             <div class="container">
             <div class="mt-1">
-                <div class="row">
+                <div class="row" style="place-items: center;">
                     <div class="col-md-3 position-relative">
-                        <img ng-src="@{{member.thumb_path}}" class="img-fluid rounded-circle" alt="Profile Photo"/>
-                        <div class="position-absolute d-flex" style="top: 70%; right: 10%;" ng-if="member.status == 4">
-                            <i class="fa fa-certificate fs-1 text-primary position-absolute" style="top: 50%; right: 50%;"></i>
-                        </div>
-                        <div class="position-absolute d-flex" style="top: 74%; right: 14%;" ng-if="member.status == 4">
-                            <i class="fa fa-check fs-5 text-white position-absolute" style="top: 50%; right: 50%;"></i>
-                        </div>
+                        <img ng-src="@{{member.thumb_path}}" class="rounded-circle object-fit-cover shadow" width="120px" height="120px" style="border: 5px solid gray;" alt="Profile Photo"/>
+                        <span class="fs-5 fw-bold d-flex align-items-center position-absolute z-3"
+                            style="bottom: 10px; right: -2px;" ng-if="member.status == 4">
+                            <span class="fa-stack me-2" style="font-size: 14px;">
+                                <i class="fa fa-certificate fa-stack-2x text-primary"></i>
+                                <i class="fa fa-check fa-stack-1x text-white"></i>
+                            </span>
+                        </span>
                     </div>
                     <div class="col-md-6">
-                    <h3 class="mt-4">@{{member.username}}, @{{member.age}}</h3>
-                    <button type="button" class="btn btn-outline-secondary btn-sm btn-smaller">
-                        <i class="fas fa-mug-hot icon-bigger"></i>
-                    Here To Date</button>
-                </div>    
+                        <h3 class="mt-4">@{{member.username}}, @{{member.age}}</h3>
+                    </div>    
                 </div>
             </div>
-                <div class="mt-5">
-                <div class="row">
-                    <p class="">  
-                        <button type="button" class="btn active" data-bs-toggle="button" aria-pressed="true"
-                        style="border-radius: 20px; width: 450px; height: 70px; margin-left: 35px;">
-                        <img style="width: 30px; height: 30px; margin-right: 5px;" src = "{{ url('assets/images/frontend/heart.png') }}">
-                        Take Control and Personalize Your Settings
-                        <img style="width: 30px; height: 30px; margin-left: 35px ;" src = "{{ url('assets/images/frontend/chevron.png') }}">
-                        </button> 
-                    </p>
-                </div>
-                </div>
-
-                <div class="mt-1">
-                <div class="row">
-                    <div class="col-md-6" style="text-align: center;">
-                    <a style="font-weight: bold;"> Plans</a>
-                    </div>
-                    <div class="col-md-6" style="text-align: center;">
-                    <a href="safty.html" style="font-weight: bold;">Safty</a>
-                </div>    
-                </div>
+            <div class="mt-5 hidden">
+            <div class="row">
+                <p class="">  
+                    <button type="button" class="btn active" data-bs-toggle="button" aria-pressed="true"
+                    style="border-radius: 20px; width: 450px; height: 70px; margin-left: 35px;">
+                    <img style="width: 30px; height: 30px; margin-right: 5px;" src = "{{ url('assets/images/frontend/heart.png') }}">
+                    Take Control and Personalize Your Settings
+                    <img style="width: 30px; height: 30px; margin-left: 35px ;" src = "{{ url('assets/images/frontend/chevron.png') }}">
+                    </button> 
+                </p>
+            </div>
             </div>
 
-            <div class="mt-1">
+            <div class="mt-1 hidden">
+            <div class="row">
+                <div class="col-md-6" style="text-align: center;">
+                <a style="font-weight: bold;"> Plans</a>
+                </div>
+                <div class="col-md-6" style="text-align: center;">
+                <a style="font-weight: bold;">Safety</a>
+            </div>    
+            </div>
+            </div>
+
+            <div class="mt-1 hidden">
                 <div class="row">
                     <div class="col-md-6">
                     <img style="width: 80px; height: 70px; margin-left: 80px;" src = "{{ url('assets/images/frontend/tachometer.png') }}">
@@ -321,7 +319,12 @@
 
     let extension = fileName.split('.').pop().toLowerCase();
     if(allowedExtensions.indexOf(extension)<0){
-        alert("Only jpeg, jpg, png and gif files are allowed");
+        new PNotify({
+            title: 'Oh No!',
+            text: 'Only JPG,JPEG,PNG and GIF files are accepted',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
         inputContainer.innerHTML = `<input type="file" style="display: none;" id="file${value}" name="file${value}" onchange="fileupload(${value})"/>`;
         $("#upload" + value).show();
         $("#label" + value).hide();
@@ -375,7 +378,7 @@
 		const fileContainer 	= document.getElementById('file-container');
 		const previewElement 	= document.getElementById('preview');
 		let files 				= fileInput.files;
-		let fileName 			=fileInput.value;
+		let fileName 			= fileInput.value;
 		let allowedExtensions 	= ['jpeg','jpg','png','gif','webp'];
 
 		let extension = fileName.split('.').pop().toLowerCase();

@@ -63,12 +63,13 @@
 							<div class="ln_solid"></div>
 							<div class="item form-group">
 								<div class="col-md-6 col-sm-6 offset-md-3">
+									<button type="submit" name="submit" class="btn btn-success">Submit</button>
 									@if(!isset($post))
 									<button class="btn btn-primary" type="reset">Reset</button>
 									@endif
-									<button type="submit" name="submit" class="btn btn-success">Submit</button>
+									
 									@if(isset($post))
-									<button type="submit" class="btn btn-primary"><a href="" class="text-white">Back</a></button>
+									<button type="submit" class="btn btn-primary"><a href="{{ url('admin-backend/post/index') }}" class="text-white">Back</a></button>
 									@endif
 								</div>
 							</div>

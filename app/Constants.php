@@ -14,7 +14,6 @@
         public const MEMBER_FAILED_PHOTO_VERIFICATION_STATUS    = 3;
         public const MEMBER_PHOTO_VERIFIED_STATUS               = 4;
         public const MEMBER_BANNED_STATUS                       = 5;
-        public const MEMBER_DATING_STATUS                       = 6;
         public const THUMB_WIDTH                                = 150;
         public const THUMB_HEIGHT                               = 200;
         public const RECORDS_PER_PAGE                           = 9;
@@ -35,6 +34,7 @@
         public const DATE_REQUEST_SENT                          = 0;
         public const DATE_REQUEST_REJECTED                      = 1;
         public const DATE_REQUEST_ACCEPTED                      = 2;
+        public const DATE_REQUEST_ADMIN_APPROVED                = 3;
         public const PURCHASE_SENT_STATUS                       = 0;
         public const PURCHASE_FAILED_STATUS                     = 1;
         public const PURCHASE_SUCCESS_STATUS                    = 2;

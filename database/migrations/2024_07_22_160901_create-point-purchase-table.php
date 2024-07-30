@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('screenshot');
             $table->unsignedBigInteger('status')->comment("0=sent, 1=reject, 2=confirmed");
             $table->unsignedInteger('point')->nullable();
-            $table->unsignedTinyInteger('created_by')->nullable();
+            $table->unsignedInteger('created_by')->nullable();
             $table->timestamps();
         });
     }

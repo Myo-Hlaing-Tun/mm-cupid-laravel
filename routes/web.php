@@ -64,6 +64,7 @@ Route::group(['prefix'=>'/','middleware'=>'member'],function(){
         Route::post('date/request',[MembersController::class,'requestDate']);
         Route::post('sync_login_member',[ProfileController::class,'syncMember']);
         Route::post('member/edit',[ProfileController::class,'editMember']);
+        Route::post('password/change',[ProfileController::class,'changePassword']);
     });
 });
 Route::group(['prefix'=>'/api/'],function(){
@@ -138,6 +139,7 @@ Route::group(['prefix'=>'/admin-backend/','middleware'=>'admin'],function(){
     Route::group(['prefix'=>'dating/'],function(){
         Route::get('index',[MembersController::class,'showDatingRequests']);
         Route::get('details/{invite_id}/{accept_id}',[MembersController::class,'showDatingMembers']);
+        Route::get('confirm/{id}',[MembersController::class,'approveDating'])->name('dating.approve');
     });
 });
 Route::get('/admin-backend/logout',[AdminLoginController::class,'adminLogout']);
