@@ -54,6 +54,7 @@ Route::group(['prefix'=>'/','middleware'=>'member'],function(){
     Route::get('profile',[ProfileController::class,'getProfile']);
     Route::get('user/{username}/{id}',[MembersController::class,'viewMember']);
     Route::post('point/purchase',[ProfileController::class,'purchasePoint'])->name('point.purchase');
+    Route::get('knowledge',[PostsController::class,'getKnowledge']);
     Route::group(['prefix'=>'api/'],function(){
         Route::post('sync-members',[MembersController::class, 'syncMembers']);
         Route::post('photo/update',[ProfileController::class,'editPhoto']);
@@ -65,6 +66,7 @@ Route::group(['prefix'=>'/','middleware'=>'member'],function(){
         Route::post('sync_login_member',[ProfileController::class,'syncMember']);
         Route::post('member/edit',[ProfileController::class,'editMember']);
         Route::post('password/change',[ProfileController::class,'changePassword']);
+        Route::post('posts/get',[PostsController::class,'getPosts']);
     });
 });
 Route::group(['prefix'=>'/api/'],function(){

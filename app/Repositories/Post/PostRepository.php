@@ -1,9 +1,11 @@
 <?php 
     namespace App\Repositories\Post;
 
+    use App\Constants;
     use App\Models\Post;
     use App\ReturnedMessage;
     use App\Utility;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\File;
     use Illuminate\Support\Facades\Storage;
 
@@ -110,6 +112,16 @@
                 $returned_array['status'] = ReturnedMessage::INTERNAL_SERVER_ERROR;
             }
             return $returned_array;
+        }
+        public function getFirstPagePosts(int $page){
+            $base_url = url('/');
+            $posts = Post::SELECT('id','thumb','fullsize_photo','title','description',
+                            DB::raw("CONCAT('". $base_url ."/storage/posts/', id, '/thumb/', thumb) AS thumb_path"),
+                            DB::raw("CONCAT('" . $base_url . "/storage/posts/' , id, '/', fullsize_photo) AS fullsize_photo_path")
+                            )
+                            ->whereNull('deleted_at')
+                            ->paginate(Constants::RECORDS_PER_PAGE , ['*'], 'page', $page);
+            return $posts;
         }
     }
 ?>

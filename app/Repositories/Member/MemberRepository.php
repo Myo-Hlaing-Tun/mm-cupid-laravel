@@ -639,11 +639,13 @@
                                 ->with('getCitiesByMember')
                                 ->whereNull('deleted_at')
                                 ->orderByRaw(
-                                    "CASE
-                                        WHEN status = " . Constants::MEMBER_PENDING_PHOTO_VERIFICATION_STATUS . " THEN 0
-                                        ELSE 1
+                                    "CASE status
+                                        WHEN " . Constants::MEMBER_PENDING_PHOTO_VERIFICATION_STATUS . " THEN 0
+                                        WHEN " . Constants::MEMBER_EMAIL_CONFIRMED_STATUS . " THEN 1
+                                        ELSE 2
                                     END"
                                 )
+                                ->orderBy('view_count','desc')
                                 ->orderBy('status','asc')
                                 ->paginate(20);
             return $members;

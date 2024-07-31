@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Posts;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\PostsPageRequest;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+use App\Http\Resources\PostsResource;
 use App\Repositories\Post\PostRepositoryInterface;
 use App\ReturnedMessage;
 use App\Utility;
@@ -121,6 +123,27 @@ class PostsController extends Controller
                 abort(404);
             }
             Utility::saveErrorLog((string) "PostsController:deletePost - \n",(string) $e->getMessage());
+            abort(500);
+        }
+    }
+    public function getKnowledge(){
+        try{
+            return view('frontend.knowledge');
+        }
+        catch(\Exception $e){
+            Utility::saveErrorLog((string) "PostsController:getKnowledge - \n",(string) $e->getMessage());
+            abort(500);
+        }
+    }
+    public function getPosts(PostsPageRequest $request){
+        try{
+            $posts = $this->postRepository->getFirstPagePosts((int) $request->get('page'));
+            $query_log = DB::getQueryLog();
+            Utility::saveDebugLog((string) "PostsController:getPosts - \n",(array) $query_log);
+            return PostsResource::collection($posts);
+        }
+        catch(\Exception $e){
+            Utility::saveErrorLog((string) "PostsController:getPosts - \n",(string) $e->getMessage());
             abort(500);
         }
     }

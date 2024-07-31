@@ -7,5 +7,6 @@
         public function getPostById(int $id);
         public function updatePost(array $data);
         public function deletePost(int $id);
+        public function getFirstPagePosts(int $page);
     }
 ?>

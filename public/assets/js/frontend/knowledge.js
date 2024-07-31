@@ -17,20 +17,41 @@ myApp.controller("MyController", function ($scope, $http, $sce ) {
 
     $scope.getPosts = function(data){
         $(".loading").show();
-        const url = base_url + "api/get_posts.php";
+        const url = base_url + "/api/posts/get";
         $http({
             method: 'POST',
             url: url,
             data: data,
         }).then(function (response) {
-            if(response.data.status == 200){
-                $scope.posts = $scope.posts.concat(response.data.posts);
-                $scope.more_posts = response.data.loadmore;
+            if(response.status == 200){
+                $scope.posts = $scope.posts.concat(response.data.data);
+                $scope.isShowMore(response.data.meta);
                 $(".loading").hide();
             }
         },function(error){
-            console.log(error);
+            $(".loading").hide();
+            if(!error.data.success){
+                for(x in error.data.errors){
+                    new PNotify({
+                        title: 'Oh no!',
+                        text: error.data.errors[x][0],
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }
+            }
         });
+    }
+
+    $scope.isShowMore = function(meta){
+        let total   = meta.total;
+        let offset  = $scope.page * meta.per_page;
+        if(total <= offset){
+            $scope.more_posts = false;
+        } 
+        else{
+            $scope.more_posts = true;
+        }
     }
 
     $scope.loadmore = function(){
